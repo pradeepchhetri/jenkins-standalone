@@ -18,6 +18,7 @@ JENKINS_PLUGINS=(
     "mesos/0.6.0"
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
+    "rebuild/1.25"
     "saferestart/0.3"
     "scm-api/0.2"
     "script-security/1.13"
