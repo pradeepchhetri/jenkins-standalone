@@ -27,7 +27,7 @@
       <slavesUser>_MAGIC_JENKINS_SLAVE_USER</slavesUser>
       <principal>jenkins</principal>
       <secret></secret>
-      <checkpoint>false</checkpoint>
+      <checkpoint>true</checkpoint>
       <onDemandRegistration>false</onDemandRegistration>
       <slaveInfos>
         <org.jenkinsci.plugins.mesos.MesosSlaveInfo>
