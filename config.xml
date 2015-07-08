@@ -24,7 +24,7 @@
       <master>_MAGIC_ZOOKEEPER_PATHS</master>
       <description></description>
       <frameworkName>Jenkins Scheduler</frameworkName>
-      <slavesUser></slavesUser>
+      <slavesUser>_MAGIC_JENKINS_SLAVE_USER</slavesUser>
       <principal>jenkins</principal>
       <secret></secret>
       <checkpoint>false</checkpoint>

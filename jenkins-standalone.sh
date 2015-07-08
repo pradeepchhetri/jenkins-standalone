@@ -37,13 +37,24 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-# Accept ZooKeeper paths on the command line
+# Print usage if arguments passed is less than the required number
 if [[ ! $# > 3 ]]; then
-    echo "Usage: $0 -z zk://10.132.188.212:2181[, ... ]/mesos -r redis.example.com"
-    echo
+    cat <<EOT
+Usage: $0 <required_arguments> [optional_arguments]
+
+REQUIRED ARGUMENTS
+  -z, --zookeeper     The ZooKeeper URL, e.g. zk://10.132.188.212:2181/mesos
+  -r, --redis-host    The hostname or IP address to a Redis instance
+
+OPTIONAL ARGUMENTS
+  -u, --user          The user to run the Jenkins slave under. Defaults to
+                      the same username that launched the Jenkins master.s
+
+EOT
     exit 1
 fi
 
+# Process command line arguments
 while [[ $# > 1 ]]; do
     key="$1"
     shift
@@ -54,6 +65,10 @@ while [[ $# > 1 ]]; do
             ;;
         -r|--redis-host)
             REDIS_HOST="$1"
+            shift
+            ;;
+        -u|--user)
+            SLAVE_USER="${1-''}"
             shift
             ;;
         *)
@@ -82,6 +97,7 @@ PORT=${PORT-"8080"}
 sed -i "s!_MAGIC_ZOOKEEPER_PATHS!${ZOOKEEPER_PATHS}!" config.xml
 sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashInstallation.xml
 sed -i "s!_MAGIC_JENKINS_URL!http://${HOST}:${PORT}!" jenkins.model.JenkinsLocationConfiguration.xml
+sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
 
 # Start the master
 export JENKINS_HOME="$(pwd)"
