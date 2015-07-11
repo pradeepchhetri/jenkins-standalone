@@ -29,16 +29,7 @@ JENKINS_PLUGINS=(
 JENKINS_WAR_MIRROR="http://mirrors.jenkins-ci.org/war-stable"
 JENKINS_PLUGINS_MIRROR="http://mirrors.jenkins-ci.org/plugins"
 
-# Ensure we have an accessible wget
-command -v wget > /dev/null
-if [[ $? != 0 ]]; then
-    echo "Error: wget not found in \$PATH"
-    echo
-    exit 1
-fi
-
-# Print usage if arguments passed is less than the required number
-if [[ ! $# > 3 ]]; then
+usage () {
     cat <<EOT
 Usage: $0 <required_arguments> [optional_arguments]
 
@@ -52,6 +43,19 @@ OPTIONAL ARGUMENTS
 
 EOT
     exit 1
+}
+
+# Ensure we have an accessible wget
+command -v wget > /dev/null
+if [[ $? != 0 ]]; then
+    echo "Error: wget not found in \$PATH"
+    echo
+    exit 1
+fi
+
+# Print usage if arguments passed is less than the required number
+if [[ ! $# > 3 ]]; then
+    usage
 fi
 
 # Process command line arguments
@@ -70,6 +74,9 @@ while [[ $# > 1 ]]; do
         -u|--user)
             SLAVE_USER="${1-''}"
             shift
+            ;;
+        -h|--help)
+            usage
             ;;
         *)
             echo "Unknown option: ${key}"
