@@ -46,8 +46,7 @@ EOT
 }
 
 # Ensure we have an accessible wget
-command -v wget > /dev/null
-if [[ $? != 0 ]]; then
+if ! command -v wget > /dev/null; then
     echo "Error: wget not found in \$PATH"
     echo
     exit 1
@@ -60,28 +59,18 @@ fi
 
 # Process command line arguments
 while [[ $# > 1 ]]; do
-    key="$1"
-    shift
+    key="$1"; shift
     case $key in
         -z|--zookeeper)
-            ZOOKEEPER_PATHS="$1"
-            shift
-            ;;
+            ZOOKEEPER_PATHS="$1"   ; shift ;;
         -r|--redis-host)
-            REDIS_HOST="$1"
-            shift
-            ;;
+            REDIS_HOST="$1"        ; shift ;;
         -u|--user)
-            SLAVE_USER="${1-''}"
-            shift
-            ;;
+            SLAVE_USER="${1-''}"   ; shift ;;
         -h|--help)
-            usage
-            ;;
+            usage ;;
         *)
-            echo "Unknown option: ${key}"
-            exit 1
-            ;;
+            echo "Unknown option: ${key}"; exit 1 ;;
     esac
 done
 
