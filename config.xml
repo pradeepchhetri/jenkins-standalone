@@ -40,6 +40,7 @@
           <idleTerminationMinutes>3</idleTerminationMinutes>
           <jvmArgs>-Xms16m -XX:+UseConcMarkSweepGC -Djava.net.preferIPv4Stack=true</jvmArgs>
           <jnlpArgs></jnlpArgs>
+          _MAGIC_CONTAINER_INFO
           <labelString>mesos</labelString>
         </org.jenkinsci.plugins.mesos.MesosSlaveInfo>
       </slaveInfos>

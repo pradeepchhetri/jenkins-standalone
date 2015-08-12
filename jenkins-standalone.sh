@@ -39,7 +39,8 @@ REQUIRED ARGUMENTS
 
 OPTIONAL ARGUMENTS
   -u, --user          The user to run the Jenkins slave under. Defaults to
-                      the same username that launched the Jenkins master.s
+                      the same username that launched the Jenkins master.
+  -d, --docker        The name of a Docker image to use for the Jenkins slave.
 
 EOT
     exit 1
@@ -67,6 +68,8 @@ while [[ $# > 1 ]]; do
             REDIS_HOST="$1"        ; shift ;;
         -u|--user)
             SLAVE_USER="${1-''}"   ; shift ;;
+        -d|--docker)
+            DOCKER_IMAGE="${1-''}" ; shift ;;
         -h|--help)
             usage ;;
         *)
@@ -94,6 +97,16 @@ sed -i "s!_MAGIC_ZOOKEEPER_PATHS!${ZOOKEEPER_PATHS}!" config.xml
 sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashInstallation.xml
 sed -i "s!_MAGIC_JENKINS_URL!http://${HOST}:${PORT}!" jenkins.model.JenkinsLocationConfiguration.xml
 sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
+
+# Optional: configure containerInfo
+if [[ ! -z $DOCKER_IMAGE ]]; then
+    container_info="<containerInfo>\n            <type>DOCKER</type>\n            <dockerImage>${DOCKER_IMAGE}</dockerImage>\n          </containerInfo>"
+
+    sed -i "s!_MAGIC_CONTAINER_INFO!${container_info}!" config.xml
+else
+    # Remove containerInfo from config.xml
+    sed -i "/_MAGIC_CONTAINER_INFO/d" config.xml
+fi
 
 # Start the master
 export JENKINS_HOME="$(pwd)"
