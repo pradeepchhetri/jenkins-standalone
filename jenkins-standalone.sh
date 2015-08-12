@@ -2,7 +2,7 @@
 set -e
 
 # $JENKINS_VERSION should be an LTS release
-JENKINS_VERSION="1.596.3"
+JENKINS_VERSION="1.609.2"
 
 # List of Jenkins plugins, in the format "${PLUGIN_NAME}/${PLUGIN_VERSION}"
 JENKINS_PLUGINS=(
