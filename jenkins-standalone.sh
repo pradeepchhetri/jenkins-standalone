@@ -110,12 +110,15 @@ fi
 
 # Start the master
 export JENKINS_HOME="$(pwd)"
-java -jar jenkins.war \
-    -Djava.awt.headless=true \
-    --webroot=war \
-    --httpPort=${PORT} \
-    --ajp13Port=-1 \
-    --httpListenAddress=0.0.0.0 \
-    --ajp13ListenAddress=127.0.0.1 \
+java \
+    -Dhudson.DNSMultiCast.disabled=true            \
+    -Dhudson.udp=-1                                \
+    -jar jenkins.war                               \
+    -Djava.awt.headless=true                       \
+    --webroot=war                                  \
+    --httpPort=${PORT}                             \
+    --ajp13Port=-1                                 \
+    --httpListenAddress=0.0.0.0                    \
+    --ajp13ListenAddress=127.0.0.1                 \
     --preferredClassLoader=java.net.URLClassLoader \
     --logfile=../jenkins.log
