@@ -2,7 +2,7 @@
 set -e
 
 # $JENKINS_VERSION should be an LTS release
-JENKINS_VERSION="1.596.3"
+JENKINS_VERSION="1.609.2"
 
 # List of Jenkins plugins, in the format "${PLUGIN_NAME}/${PLUGIN_VERSION}"
 JENKINS_PLUGINS=(
@@ -15,7 +15,7 @@ JENKINS_PLUGINS=(
     "job-dsl/1.35"
     "logstash/1.0.3"
     "metadata/1.1.0b"
-    "mesos/0.6.0"
+    "mesos/0.8.0"
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
     "rebuild/1.25"
@@ -39,15 +39,15 @@ REQUIRED ARGUMENTS
 
 OPTIONAL ARGUMENTS
   -u, --user          The user to run the Jenkins slave under. Defaults to
-                      the same username that launched the Jenkins master.s
+                      the same username that launched the Jenkins master.
+  -d, --docker        The name of a Docker image to use for the Jenkins slave.
 
 EOT
     exit 1
 }
 
 # Ensure we have an accessible wget
-command -v wget > /dev/null
-if [[ $? != 0 ]]; then
+if ! command -v wget > /dev/null; then
     echo "Error: wget not found in \$PATH"
     echo
     exit 1
@@ -60,28 +60,20 @@ fi
 
 # Process command line arguments
 while [[ $# > 1 ]]; do
-    key="$1"
-    shift
+    key="$1"; shift
     case $key in
         -z|--zookeeper)
-            ZOOKEEPER_PATHS="$1"
-            shift
-            ;;
+            ZOOKEEPER_PATHS="$1"   ; shift ;;
         -r|--redis-host)
-            REDIS_HOST="$1"
-            shift
-            ;;
+            REDIS_HOST="$1"        ; shift ;;
         -u|--user)
-            SLAVE_USER="${1-''}"
-            shift
-            ;;
+            SLAVE_USER="${1-''}"   ; shift ;;
+        -d|--docker)
+            DOCKER_IMAGE="${1-''}" ; shift ;;
         -h|--help)
-            usage
-            ;;
+            usage ;;
         *)
-            echo "Unknown option: ${key}"
-            exit 1
-            ;;
+            echo "Unknown option: ${key}"; exit 1 ;;
     esac
 done
 
@@ -106,14 +98,27 @@ sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashIns
 sed -i "s!_MAGIC_JENKINS_URL!http://${HOST}:${PORT}!" jenkins.model.JenkinsLocationConfiguration.xml
 sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
 
+# Optional: configure containerInfo
+if [[ ! -z $DOCKER_IMAGE ]]; then
+    container_info="<containerInfo>\n            <type>DOCKER</type>\n            <dockerImage>${DOCKER_IMAGE}</dockerImage>\n            <networking>BRIDGE</networking>\n            <useCustomDockerCommandShell>false</useCustomDockerCommandShell>\n            <dockerPrivilegedMode>false</dockerPrivilegedMode>\n             <dockerForcePullImage>false</dockerForcePullImage>\n          </containerInfo>"
+
+    sed -i "s!_MAGIC_CONTAINER_INFO!${container_info}!" config.xml
+else
+    # Remove containerInfo from config.xml
+    sed -i "/_MAGIC_CONTAINER_INFO/d" config.xml
+fi
+
 # Start the master
 export JENKINS_HOME="$(pwd)"
-java -jar jenkins.war \
-    -Djava.awt.headless=true \
-    --webroot=war \
-    --httpPort=${PORT} \
-    --ajp13Port=-1 \
-    --httpListenAddress=0.0.0.0 \
-    --ajp13ListenAddress=127.0.0.1 \
+java \
+    -Dhudson.DNSMultiCast.disabled=true            \
+    -Dhudson.udp=-1                                \
+    -jar jenkins.war                               \
+    -Djava.awt.headless=true                       \
+    --webroot=war                                  \
+    --httpPort=${PORT}                             \
+    --ajp13Port=-1                                 \
+    --httpListenAddress=0.0.0.0                    \
+    --ajp13ListenAddress=127.0.0.1                 \
     --preferredClassLoader=java.net.URLClassLoader \
     --logfile=../jenkins.log
