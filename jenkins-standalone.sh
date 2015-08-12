@@ -15,7 +15,7 @@ JENKINS_PLUGINS=(
     "job-dsl/1.35"
     "logstash/1.0.3"
     "metadata/1.1.0b"
-    "mesos/0.6.0"
+    "mesos/0.8.0"
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
     "rebuild/1.25"
@@ -100,7 +100,7 @@ sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
 
 # Optional: configure containerInfo
 if [[ ! -z $DOCKER_IMAGE ]]; then
-    container_info="<containerInfo>\n            <type>DOCKER</type>\n            <dockerImage>${DOCKER_IMAGE}</dockerImage>\n          </containerInfo>"
+    container_info="<containerInfo>\n            <type>DOCKER</type>\n            <dockerImage>${DOCKER_IMAGE}</dockerImage>\n            <networking>BRIDGE</networking>\n            <useCustomDockerCommandShell>false</useCustomDockerCommandShell>\n            <dockerPrivilegedMode>false</dockerPrivilegedMode>\n             <dockerForcePullImage>false</dockerForcePullImage>\n          </containerInfo>"
 
     sed -i "s!_MAGIC_CONTAINER_INFO!${container_info}!" config.xml
 else
