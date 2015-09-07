@@ -2,7 +2,7 @@
 set -e
 
 # $JENKINS_VERSION should be an LTS release
-JENKINS_VERSION="1.609.2"
+JENKINS_VERSION="1.609.3"
 
 # List of Jenkins plugins, in the format "${PLUGIN_NAME}/${PLUGIN_VERSION}"
 JENKINS_PLUGINS=(
@@ -13,9 +13,7 @@ JENKINS_PLUGINS=(
     "greenballs/1.14"
     "hipchat/0.1.8"
     "job-dsl/1.35"
-    "logstash/1.0.3"
     "metadata/1.1.0b"
-    "mesos/0.8.0"
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
     "rebuild/1.25"
@@ -35,7 +33,6 @@ Usage: $0 <required_arguments> [optional_arguments]
 
 REQUIRED ARGUMENTS
   -z, --zookeeper     The ZooKeeper URL, e.g. zk://10.132.188.212:2181/mesos
-  -r, --redis-host    The hostname or IP address to a Redis instance
 
 OPTIONAL ARGUMENTS
   -u, --user          The user to run the Jenkins slave under. Defaults to
@@ -53,10 +50,10 @@ if ! command -v wget > /dev/null; then
     exit 1
 fi
 
-# Print usage if arguments passed is less than the required number
-if [[ ! $# > 3 ]]; then
-    usage
-fi
+# # Print usage if arguments passed is less than the required number
+# if [[ ! $# > 3 ]]; then
+#     usage
+# fi
 
 # Process command line arguments
 while [[ $# > 1 ]]; do
@@ -64,8 +61,6 @@ while [[ $# > 1 ]]; do
     case $key in
         -z|--zookeeper)
             ZOOKEEPER_PATHS="$1"   ; shift ;;
-        -r|--redis-host)
-            REDIS_HOST="$1"        ; shift ;;
         -u|--user)
             SLAVE_USER="${1-''}"   ; shift ;;
         -d|--docker)
@@ -94,7 +89,7 @@ done
 PORT=${PORT-"8080"}
 
 sed -i "s!_MAGIC_ZOOKEEPER_PATHS!${ZOOKEEPER_PATHS}!" config.xml
-sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashInstallation.xml
+# sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashInstallation.xml
 sed -i "s!_MAGIC_JENKINS_URL!http://${HOST}:${PORT}!" jenkins.model.JenkinsLocationConfiguration.xml
 sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
 
