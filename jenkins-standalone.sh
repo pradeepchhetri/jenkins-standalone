@@ -13,6 +13,7 @@ JENKINS_PLUGINS=(
     "greenballs/1.14"
     "hipchat/0.1.8"
     "job-dsl/1.35"
+    "mesos/0.8.0"
     "metadata/1.1.0b"
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
@@ -51,9 +52,9 @@ if ! command -v wget > /dev/null; then
 fi
 
 # # Print usage if arguments passed is less than the required number
-# if [[ ! $# > 3 ]]; then
-#     usage
-# fi
+if [[ ! $# > 1 ]]; then
+    usage
+fi
 
 # Process command line arguments
 while [[ $# > 1 ]]; do
@@ -89,7 +90,6 @@ done
 PORT=${PORT-"8080"}
 
 sed -i "s!_MAGIC_ZOOKEEPER_PATHS!${ZOOKEEPER_PATHS}!" config.xml
-# sed -i "s!_MAGIC_REDIS_HOST!${REDIS_HOST}!" jenkins.plugins.logstash.LogstashInstallation.xml
 sed -i "s!_MAGIC_JENKINS_URL!http://${HOST}:${PORT}!" jenkins.model.JenkinsLocationConfiguration.xml
 sed -i "s!_MAGIC_JENKINS_SLAVE_USER!${SLAVE_USER}!" config.xml
 
