@@ -8,6 +8,7 @@ JENKINS_VERSION="1.609.3"
 JENKINS_PLUGINS=(
     "credentials/1.22"
     "email-ext/2.39"
+    "envinject/1.92.1"
     "git/2.3.5"
     "git-client/1.16.1"
     "greenballs/1.14"
