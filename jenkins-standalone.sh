@@ -13,6 +13,7 @@ JENKINS_PLUGINS=(
     "git-client/1.16.1"
     "greenballs/1.14"
     "hipchat/0.1.8"
+    "jenkins-multijob-plugin/1.18"
     "job-dsl/1.35"
     "mesos/0.8.0"
     "metadata/1.1.0b"
