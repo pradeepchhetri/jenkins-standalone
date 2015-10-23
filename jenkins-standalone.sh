@@ -2,10 +2,11 @@
 set -e
 
 # $JENKINS_VERSION should be an LTS release
-JENKINS_VERSION="1.609.3"
+JENKINS_VERSION="1.625.1"
 
 # List of Jenkins plugins, in the format "${PLUGIN_NAME}/${PLUGIN_VERSION}"
 JENKINS_PLUGINS=(
+    "conditional-buildstep/1.3.3"
     "credentials/1.22"
     "email-ext/2.39"
     "envinject/1.92.1"
