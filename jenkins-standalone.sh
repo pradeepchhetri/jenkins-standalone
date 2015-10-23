@@ -21,6 +21,7 @@ JENKINS_PLUGINS=(
     "monitoring/1.55.0"
     "parameterized-trigger/2.25"
     "rebuild/1.25"
+    "run-condition/1.0"
     "saferestart/0.3"
     "scm-api/0.2"
     "script-security/1.13"
