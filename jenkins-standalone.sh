@@ -122,8 +122,7 @@ curl \
   "Port": $PORT,
   "Check": {
     "HTTP": "http://localhost:$PORT",
-    "Interval": "10s",
-    "TTL": "15s"
+    "Interval": "10s"
   }
 }
 EOF
