@@ -107,26 +107,6 @@ else
     sed -i "/_MAGIC_CONTAINER_INFO/d" config.xml
 fi
 
-# Register service with Consul
-curl \
-    -X PUT \
-    -H "Content-Type: application/json" \
-    -d@- \
-    "http://localhost:8500/v1/agent/service/register" <<EOF
-{
-  "ID": "jenkins-master",
-  "Name": "jenkins",
-  "Tags": [
-    "internal-http"
-  ],
-  "Port": $PORT,
-  "Check": {
-    "HTTP": "http://localhost:$PORT",
-    "Interval": "10s"
-  }
-}
-EOF
-
 # Start the master
 export JENKINS_HOME="$(pwd)"
 java \
