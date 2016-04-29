@@ -35,7 +35,7 @@
           <slaveMem>512</slaveMem>
           <executorCpus>0.25</executorCpus>
           <maxExecutors>1</maxExecutors>
-          <executorMem>256</executorMem>
+          <executorMem>128</executorMem>
           <remoteFSRoot>jenkins</remoteFSRoot>
           <idleTerminationMinutes>4</idleTerminationMinutes>
           <jvmArgs>-Xms64m -XX:+UseConcMarkSweepGC -Djava.net.preferIPv4Stack=true</jvmArgs>
